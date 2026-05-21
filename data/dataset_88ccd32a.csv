@@ -1,0 +1,49 @@
+Order ID,Date,Region,Salesperson,Product,Category,Units Sold,Unit Price,Revenue,Discount (%),Profit
+1001,2024-01-03,North,Alice,Laptop,Electronics,5,899.99,4499.95,5,3374.96
+1002,2024-01-05,South,Bob,Desk Chair,Furniture,12,249.99,2999.88,10,1799.93
+1003,2024-01-07,East,Carol,Monitor,Electronics,8,399.99,3199.92,0,2239.94
+1004,2024-01-10,West,Dave,Keyboard,Electronics,30,49.99,1499.70,5,1124.78
+1005,2024-01-12,North,Alice,Notebook,Stationery,100,4.99,499.00,0,374.25
+1006,2024-01-15,South,Bob,Standing Desk,Furniture,4,749.99,2999.96,8,1799.98
+1007,2024-01-18,East,Carol,Webcam,Electronics,20,79.99,1599.80,5,1199.85
+1008,2024-01-20,West,Dave,Pen Set,Stationery,200,2.49,498.00,0,373.50
+1009,2024-02-02,North,Alice,Laptop,Electronics,7,899.99,6299.93,5,4724.95
+1010,2024-02-04,South,Bob,Desk Chair,Furniture,9,249.99,2249.91,10,1349.95
+1011,2024-02-06,East,Carol,Headphones,Electronics,15,149.99,2249.85,5,1687.39
+1012,2024-02-09,West,Dave,Monitor,Electronics,6,399.99,2399.94,0,1679.96
+1013,2024-02-11,North,Alice,Mouse,Electronics,50,29.99,1499.50,0,1124.63
+1014,2024-02-14,South,Bob,Bookshelf,Furniture,5,349.99,1749.95,10,1049.97
+1015,2024-02-16,East,Carol,Laptop,Electronics,4,899.99,3599.96,5,2699.97
+1016,2024-02-19,West,Dave,Notebook,Stationery,150,4.99,748.50,0,561.38
+1017,2024-03-01,North,Alice,Standing Desk,Furniture,3,749.99,2249.97,8,1349.98
+1018,2024-03-04,South,Bob,Webcam,Electronics,25,79.99,1999.75,5,1499.81
+1019,2024-03-06,East,Carol,Keyboard,Electronics,40,49.99,1999.60,5,1499.70
+1020,2024-03-09,West,Dave,Laptop,Electronics,6,899.99,5399.94,5,4049.96
+1021,2024-03-12,North,Alice,Monitor,Electronics,10,399.99,3999.90,0,2799.93
+1022,2024-03-15,South,Bob,Pen Set,Stationery,300,2.49,747.00,0,560.25
+1023,2024-03-18,East,Carol,Desk Chair,Furniture,7,249.99,1749.93,10,1049.96
+1024,2024-03-20,West,Dave,Headphones,Electronics,18,149.99,2699.82,5,2024.87
+1025,2024-03-22,North,Alice,Mouse,Electronics,60,29.99,1799.40,0,1349.55
+1026,2024-04-01,South,Bob,Laptop,Electronics,5,899.99,4499.95,5,3374.96
+1027,2024-04-04,East,Carol,Bookshelf,Furniture,4,349.99,1399.96,10,839.98
+1028,2024-04-07,West,Dave,Notebook,Stationery,200,4.99,998.00,0,748.50
+1029,2024-04-10,North,Alice,Webcam,Electronics,22,79.99,1759.78,5,1319.84
+1030,2024-04-13,South,Bob,Monitor,Electronics,8,399.99,3199.92,0,2239.94
+1031,2024-04-16,East,Carol,Standing Desk,Furniture,2,749.99,1499.98,8,899.99
+1032,2024-04-19,West,Dave,Keyboard,Electronics,35,49.99,1749.65,5,1312.24
+1033,2024-05-02,North,Alice,Laptop,Electronics,9,899.99,8099.91,5,6074.93
+1034,2024-05-05,South,Bob,Headphones,Electronics,20,149.99,2999.80,5,2249.85
+1035,2024-05-08,East,Carol,Mouse,Electronics,70,29.99,2099.30,0,1574.48
+1036,2024-05-11,West,Dave,Desk Chair,Furniture,11,249.99,2749.89,10,1649.93
+1037,2024-05-14,North,Alice,Pen Set,Stationery,250,2.49,622.50,0,466.88
+1038,2024-05-17,South,Bob,Keyboard,Electronics,28,49.99,1399.72,5,1049.79
+1039,2024-05-20,East,Carol,Notebook,Stationery,180,4.99,898.20,0,673.65
+1040,2024-05-23,West,Dave,Monitor,Electronics,7,399.99,2799.93,0,1959.95
+1041,2024-06-01,North,Alice,Standing Desk,Furniture,4,749.99,2999.96,8,1799.98
+1042,2024-06-04,South,Bob,Laptop,Electronics,6,899.99,5399.94,5,4049.96
+1043,2024-06-07,East,Carol,Webcam,Electronics,30,79.99,2399.70,5,1799.78
+1044,2024-06-10,West,Dave,Bookshelf,Furniture,6,349.99,2099.94,10,1259.96
+1045,2024-06-13,North,Alice,Headphones,Electronics,12,149.99,1799.88,5,1349.91
+1046,2024-06-16,South,Bob,Mouse,Electronics,80,29.99,2399.20,0,1799.40
+1047,2024-06-19,East,Carol,Laptop,Electronics,5,899.99,4499.95,5,3374.96
+1048,2024-06-22,West,Dave,Pen Set,Stationery,400,2.49,996.00,0,747.00
