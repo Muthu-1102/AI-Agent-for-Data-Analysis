@@ -3,7 +3,7 @@ from typing import Dict, Any
 
 from core.pipeline import PipelineStep, step_logging_wrapper
 from models.schema_model import DataSchema, ColumnInfo
-from utils.helpers import resolve_dataset_path
+from utils.helpers import load_and_clean_dataset, resolve_dataset_path
 
 
 class SchemaAgent(PipelineStep):
@@ -28,9 +28,7 @@ class SchemaAgent(PipelineStep):
         file_path = resolve_dataset_path(file_id)
 
         try:
-            # Read a representative chunk (cap at 1000 rows) to keep memory bounded
-            # while still giving the LLM enough signal for schema context.
-            df = pd.read_csv(file_path, nrows=1000)
+            df = load_and_clean_dataset(file_id, nrows=1000)
 
             # Build per-column detail objects
             column_details = [

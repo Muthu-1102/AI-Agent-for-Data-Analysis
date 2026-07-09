@@ -83,7 +83,11 @@ def main():
             with st.expander("👀 Data Preview", expanded=False):
                 try:
                     uploaded_file.seek(0)
-                    df_preview = pd.read_csv(uploaded_file, nrows=10)
+                    try:
+                        df_preview = pd.read_csv(uploaded_file, nrows=10)
+                    except Exception:
+                        uploaded_file.seek(0)
+                        df_preview = pd.read_csv(uploaded_file, nrows=10, engine='python')
                     st.dataframe(df_preview, use_container_width=True, height=250)
                     st.caption(f"{len(df_preview.columns)} columns detected")
                 except Exception:

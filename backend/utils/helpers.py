@@ -31,6 +31,38 @@ def resolve_dataset_path(file_id: str, data_dir: str = "data") -> str:
     )
 
 
+def load_and_clean_dataset(file_id: str, nrows: Optional[int] = None) -> Any:
+    """
+    Loads a CSV dataset using a robust fallback mechanism (C engine -> Python engine)
+    and cleans it by automatically converting columns to numeric if they are primarily numeric.
+    """
+    import pandas as pd
+    from pandas.api.types import is_numeric_dtype
+    
+    file_path = resolve_dataset_path(file_id)
+    
+    try:
+        df = pd.read_csv(file_path, nrows=nrows)
+    except Exception:
+        # Fallback to python engine in case of C parser/tokenization errors
+        df = pd.read_csv(file_path, nrows=nrows, engine='python')
+        
+    # Auto-coerce numeric columns that might have been parsed as objects/strings due to malformed rows
+    for col in df.columns:
+        if not is_numeric_dtype(df[col]):
+            non_null = df[col].dropna()
+            if not non_null.empty:
+                try:
+                    converted = pd.to_numeric(non_null, errors='coerce')
+                    # If at least 80% of non-null values are numeric, convert the column
+                    if converted.notna().sum() / len(non_null) > 0.8:
+                        df[col] = pd.to_numeric(df[col], errors='coerce')
+                except Exception:
+                    pass
+                    
+    return df
+
+
 def ensure_dir(directory: str) -> str:
     """
     Ensures the given directory exists, creating it (and any parents) if necessary.

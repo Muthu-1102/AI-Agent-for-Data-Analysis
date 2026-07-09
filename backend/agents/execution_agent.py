@@ -8,7 +8,7 @@ import pandas as pd
 
 from core.pipeline import PipelineStep, step_logging_wrapper
 from utils.sandbox import Sandbox
-from utils.helpers import resolve_dataset_path
+from utils.helpers import load_and_clean_dataset, resolve_dataset_path
 
 class ExecutionAgent(PipelineStep):
     """
@@ -29,8 +29,7 @@ class ExecutionAgent(PipelineStep):
             
         # 1. Load the actual dataset into memory as 'df'
         try:
-            file_path = resolve_dataset_path(file_id)
-            df = pd.read_csv(file_path)
+            df = load_and_clean_dataset(file_id)
         except FileNotFoundError as e:
             raise FileNotFoundError(f"Execution failed: {str(e)}")
         except Exception as e:
