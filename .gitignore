@@ -10,3 +10,4 @@ __pycache__/
 .pyre/
 .mypy_cache/
 .coverage
+data
