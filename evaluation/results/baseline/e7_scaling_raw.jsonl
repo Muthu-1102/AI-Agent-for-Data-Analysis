@@ -1,0 +1,5 @@
+{"experiment_id": "E7_scaling", "row_count": 1000, "repetitions": 5, "schema_latency_p50": 0.01435, "schema_latency_mean": 0.02309, "exec_latency_p50": 0.00967, "exec_latency_mean": 0.1214, "exec_latency_max": 0.56839}
+{"experiment_id": "E7_scaling", "row_count": 10000, "repetitions": 5, "schema_latency_p50": 0.01792, "schema_latency_mean": 0.02427, "exec_latency_p50": 0.04196, "exec_latency_mean": 0.0466, "exec_latency_max": 0.0715}
+{"experiment_id": "E7_scaling", "row_count": 50000, "repetitions": 5, "schema_latency_p50": 0.01316, "schema_latency_mean": 0.01988, "exec_latency_p50": 0.19796, "exec_latency_mean": 0.20346, "exec_latency_max": 0.2338}
+{"experiment_id": "E7_scaling", "row_count": 100000, "repetitions": 5, "schema_latency_p50": 0.01696, "schema_latency_mean": 0.02102, "exec_latency_p50": 0.38658, "exec_latency_mean": 0.38546, "exec_latency_max": 0.41278}
+{"experiment_id": "E7_scaling", "row_count": 250000, "repetitions": 5, "schema_latency_p50": 0.01252, "schema_latency_mean": 0.01911, "exec_latency_p50": 0.97592, "exec_latency_mean": 0.97567, "exec_latency_max": 1.05694}

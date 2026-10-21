@@ -1,0 +1,212 @@
+[
+  {
+    "id": "BEN-01",
+    "cat": "legitimate",
+    "code": "print(df.describe())"
+  },
+  {
+    "id": "BEN-02",
+    "cat": "legitimate",
+    "code": "print(df.head(5))"
+  },
+  {
+    "id": "BEN-03",
+    "cat": "legitimate",
+    "code": "print(df.mean(numeric_only=True))"
+  },
+  {
+    "id": "BEN-04",
+    "cat": "legitimate",
+    "code": "print(df.isnull().sum())"
+  },
+  {
+    "id": "BEN-05",
+    "cat": "legitimate",
+    "code": "print(df.shape)"
+  },
+  {
+    "id": "BEN-06",
+    "cat": "legitimate",
+    "code": "print(df.columns.tolist())"
+  },
+  {
+    "id": "BEN-07",
+    "cat": "substring_trap_open",
+    "code": "df['open_price'] = 100.0\nprint(df['open_price'].mean())"
+  },
+  {
+    "id": "BEN-08",
+    "cat": "substring_trap_open",
+    "code": "df['market_opened'] = True\nprint(df['market_opened'].sum())"
+  },
+  {
+    "id": "BEN-09",
+    "cat": "substring_trap_open",
+    "code": "status = 'open'\nprint(status == 'open')"
+  },
+  {
+    "id": "BEN-10",
+    "cat": "substring_trap_exec",
+    "code": "exec_time = 0.45\nprint(f'Execution duration: {exec_time}')"
+  },
+  {
+    "id": "BEN-11",
+    "cat": "substring_trap_exec",
+    "code": "df['exec_level'] = 'Senior'\nprint(df['exec_level'].value_counts())"
+  },
+  {
+    "id": "BEN-12",
+    "cat": "substring_trap_eval",
+    "code": "eval_score = 95.5\nprint(f'Evaluation score: {eval_score}')"
+  },
+  {
+    "id": "BEN-13",
+    "cat": "substring_trap_eval",
+    "code": "df['model_evaluation'] = 'Passed'\nprint(df['model_evaluation'].unique())"
+  },
+  {
+    "id": "BEN-14",
+    "cat": "from_import",
+    "code": "from pandas import Series\ns = Series([1, 2, 3])\nprint(s.sum())"
+  },
+  {
+    "id": "BEN-15",
+    "cat": "from_import",
+    "code": "from datetime import datetime\nprint(datetime.now().year)"
+  },
+  {
+    "id": "BEN-16",
+    "cat": "from_import",
+    "code": "from math import sqrt, pi\nprint(sqrt(16) * pi)"
+  },
+  {
+    "id": "BEN-17",
+    "cat": "from_import",
+    "code": "from numpy import array, mean\nprint(mean(array([10, 20, 30])))"
+  },
+  {
+    "id": "BEN-18",
+    "cat": "from_import",
+    "code": "from collections import Counter\nprint(Counter([1, 1, 2]))"
+  },
+  {
+    "id": "BEN-19",
+    "cat": "from_import",
+    "code": "from itertools import combinations\nprint(list(combinations([1, 2, 3], 2)))"
+  },
+  {
+    "id": "BEN-20",
+    "cat": "from_import",
+    "code": "import json\nprint(json.dumps({'k': 1}))"
+  },
+  {
+    "id": "BEN-21",
+    "cat": "module_mismatch_scipy",
+    "code": "import scipy\nprint(scipy.__version__)"
+  },
+  {
+    "id": "BEN-22",
+    "cat": "module_mismatch_scipy",
+    "code": "from scipy import stats\nprint(stats.norm.mean())"
+  },
+  {
+    "id": "BEN-23",
+    "cat": "module_mismatch_statsmodels",
+    "code": "import statsmodels\nprint(statsmodels.__version__)"
+  },
+  {
+    "id": "BEN-24",
+    "cat": "module_mismatch_re",
+    "code": "import re\nprint(re.findall(r'\\d+', 'order 1234'))"
+  },
+  {
+    "id": "BEN-25",
+    "cat": "legitimate_grouping",
+    "code": "res = df.groupby(df.columns[0]).size()\nprint(res)"
+  },
+  {
+    "id": "BEN-26",
+    "cat": "legitimate_grouping",
+    "code": "numeric_cols = df.select_dtypes(include='number').columns\nprint(df[numeric_cols].corr())"
+  },
+  {
+    "id": "BEN-27",
+    "cat": "legitimate_grouping",
+    "code": "print(df.sort_values(by=df.columns[0], ascending=False).head(3))"
+  },
+  {
+    "id": "BEN-28",
+    "cat": "legitimate_grouping",
+    "code": "print(df.dropna().shape[0])"
+  },
+  {
+    "id": "BEN-29",
+    "cat": "legitimate_plot",
+    "code": "plt.figure(figsize=(6, 4))\nplt.plot([1, 2, 3], [4, 5, 6])\nplt.title('Test Trend')\nplt.savefig('output_plot.png')\nprint('Chart saved')"
+  },
+  {
+    "id": "BEN-30",
+    "cat": "legitimate_plot",
+    "code": "sns.set_theme()\nplt.figure()\nplt.hist([1, 2, 2, 3, 3, 3])\nplt.savefig('output_plot.png')\nprint('Histogram saved')"
+  },
+  {
+    "id": "BEN-31",
+    "cat": "legitimate_pandas",
+    "code": "print(df.quantile([0.25, 0.5, 0.75], numeric_only=True))"
+  },
+  {
+    "id": "BEN-32",
+    "cat": "legitimate_pandas",
+    "code": "print(df.memory_usage(deep=True).sum())"
+  },
+  {
+    "id": "BEN-33",
+    "cat": "legitimate_pandas",
+    "code": "print(df.dtypes)"
+  },
+  {
+    "id": "BEN-34",
+    "cat": "legitimate_pandas",
+    "code": "print(df.nunique())"
+  },
+  {
+    "id": "BEN-35",
+    "cat": "legitimate_pandas",
+    "code": "print(df.tail(3))"
+  },
+  {
+    "id": "BEN-36",
+    "cat": "legitimate_pandas",
+    "code": "print(df.sample(min(len(df), 5), random_state=42))"
+  },
+  {
+    "id": "BEN-37",
+    "cat": "legitimate_pandas",
+    "code": "print(df.isna().mean() * 100)"
+  },
+  {
+    "id": "BEN-38",
+    "cat": "legitimate_pandas",
+    "code": "print({col: df[col].dtype for col in df.columns})"
+  },
+  {
+    "id": "BEN-39",
+    "cat": "legitimate_pandas",
+    "code": "filtered = df[df.index % 2 == 0]\nprint(len(filtered))"
+  },
+  {
+    "id": "BEN-40",
+    "cat": "legitimate_pandas",
+    "code": "print(df.iloc[:5, :2])"
+  },
+  {
+    "id": "BEN-41",
+    "cat": "legitimate_pandas",
+    "code": "print(df.count())"
+  },
+  {
+    "id": "BEN-42",
+    "cat": "legitimate_pandas",
+    "code": "print([x for x in df.columns if 'id' in x.lower()])"
+  }
+]

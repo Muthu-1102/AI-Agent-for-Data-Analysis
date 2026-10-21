@@ -1,0 +1,312 @@
+{
+  "experiment_e1_heldout": {
+    "n_total_runs": 144,
+    "n_unique_questions": 48,
+    "completion": {
+      "count": 134,
+      "rate": 0.9306,
+      "ci_95": [
+        0.8769,
+        0.9618
+      ]
+    },
+    "execution_success": {
+      "count": 134,
+      "rate": 0.9306,
+      "ci_95": [
+        0.8769,
+        0.9618
+      ]
+    },
+    "computation_correctness": {
+      "count": 98,
+      "rate": 0.6806,
+      "ci_95": [
+        0.6006,
+        0.7512
+      ]
+    },
+    "summary_correctness": {
+      "count": 128,
+      "rate": 0.8889,
+      "ci_95": [
+        0.8271,
+        0.9304
+      ]
+    },
+    "conditional_correctness": {
+      "n_available": 134,
+      "count": 98,
+      "rate": 0.7313,
+      "ci_95": [
+        0.6506,
+        0.7992
+      ]
+    },
+    "consistency_3_reps": {
+      "3": 26,
+      "2": 10,
+      "1": 0,
+      "0": 12
+    },
+    "category_breakdown": {
+      "simple_aggregate": {
+        "n": 33,
+        "correct": 25,
+        "rate": 0.7576,
+        "ci_95": [
+          0.5898,
+          0.8717
+        ]
+      },
+      "groupby": {
+        "n": 33,
+        "correct": 20,
+        "rate": 0.6061,
+        "ci_95": [
+          0.4368,
+          0.7532
+        ]
+      },
+      "filtering": {
+        "n": 21,
+        "correct": 16,
+        "rate": 0.7619,
+        "ci_95": [
+          0.5491,
+          0.8937
+        ]
+      },
+      "percentages": {
+        "n": 12,
+        "correct": 11,
+        "rate": 0.9167,
+        "ci_95": [
+          0.6461,
+          0.9851
+        ]
+      },
+      "top_k": {
+        "n": 12,
+        "correct": 5,
+        "rate": 0.4167,
+        "ci_95": [
+          0.1933,
+          0.6805
+        ]
+      },
+      "correlations": {
+        "n": 9,
+        "correct": 9,
+        "rate": 1.0,
+        "ci_95": [
+          0.7009,
+          1.0
+        ]
+      },
+      "multi_step": {
+        "n": 9,
+        "correct": 2,
+        "rate": 0.2222,
+        "ci_95": [
+          0.0632,
+          0.5474
+        ]
+      },
+      "chart_request": {
+        "n": 9,
+        "correct": 5,
+        "rate": 0.5556,
+        "ci_95": [
+          0.2667,
+          0.8112
+        ]
+      },
+      "missing_values": {
+        "n": 6,
+        "correct": 5,
+        "rate": 0.8333,
+        "ci_95": [
+          0.4365,
+          0.9699
+        ]
+      }
+    },
+    "dataset_breakdown": {
+      "synthetic_sales.csv": {
+        "n": 42,
+        "correct": 27,
+        "rate": 0.6429,
+        "ci_95": [
+          0.4917,
+          0.7701
+        ]
+      },
+      "synthetic_hr.csv": {
+        "n": 42,
+        "correct": 23,
+        "rate": 0.5476,
+        "ci_95": [
+          0.3995,
+          0.6878
+        ]
+      },
+      "synthetic_sensor.csv": {
+        "n": 36,
+        "correct": 33,
+        "rate": 0.9167,
+        "ci_95": [
+          0.7817,
+          0.9713
+        ]
+      },
+      "synthetic_messy.csv": {
+        "n": 24,
+        "correct": 15,
+        "rate": 0.625,
+        "ci_95": [
+          0.4271,
+          0.7884
+        ]
+      }
+    },
+    "failure_taxonomy": {
+      "CORRECT": 98,
+      "EXECUTED_WRONG_ANSWER": 36,
+      "INFRA_ERROR": 10
+    },
+    "latency_stats": {
+      "p50": 8.547,
+      "p95": 11.063,
+      "max": 75.034,
+      "mean": 8.492,
+      "std": 6.099
+    }
+  },
+  "experiment_e4_security": {
+    "malicious_corpus": {
+      "total_probes": 42,
+      "validation_agent_blocked": 18,
+      "sandbox_substring_blocked": 18,
+      "end_to_end_blocked": 24,
+      "overall_block_rate": 0.5714,
+      "ci_95": [
+        0.4221,
+        0.7088
+      ],
+      "category_breakdown": {
+        "forbidden_import": {
+          "total": 7,
+          "blocked": 7,
+          "bypassed": 0,
+          "bypasses": []
+        },
+        "forbidden_builtin": {
+          "total": 7,
+          "blocked": 7,
+          "bypassed": 0,
+          "bypasses": []
+        },
+        "dunder_introspection": {
+          "total": 7,
+          "blocked": 0,
+          "bypassed": 7,
+          "bypasses": [
+            "MAL-15",
+            "MAL-16",
+            "MAL-17",
+            "MAL-18",
+            "MAL-19",
+            "MAL-20",
+            "MAL-21"
+          ]
+        },
+        "lib_file_io": {
+          "total": 7,
+          "blocked": 3,
+          "bypassed": 4,
+          "bypasses": [
+            "MAL-22",
+            "MAL-25",
+            "MAL-26",
+            "MAL-27"
+          ]
+        },
+        "env_leak": {
+          "total": 7,
+          "blocked": 5,
+          "bypassed": 2,
+          "bypasses": [
+            "MAL-31",
+            "MAL-32"
+          ]
+        },
+        "resource_exhaustion": {
+          "total": 7,
+          "blocked": 2,
+          "bypassed": 5,
+          "bypasses": [
+            "MAL-36",
+            "MAL-37",
+            "MAL-38",
+            "MAL-39",
+            "MAL-42"
+          ]
+        }
+      }
+    },
+    "benign_corpus": {
+      "total_snippets": 42,
+      "validation_agent_false_positives": 0,
+      "sandbox_substring_false_positives": 0,
+      "end_to_end_false_positives": 0,
+      "false_positive_rate": 0.0,
+      "ci_95": [
+        0.0,
+        0.0838
+      ]
+    }
+  },
+  "experiment_e5_robustness": {
+    "edge_csvs": {
+      "total": 8,
+      "graceful": 8,
+      "rate": 1.0,
+      "ci_95": [
+        0.6756,
+        1.0
+      ]
+    },
+    "unanswerable_questions": {
+      "total": 3,
+      "graceful": 2,
+      "rate": 0.6667,
+      "ci_95": [
+        0.2077,
+        0.9385
+      ],
+      "fabricated_count": 1,
+      "fabricated_rate": 0.3333,
+      "fabricated_ci_95": [
+        0.0615,
+        0.7923
+      ]
+    }
+  },
+  "experiment_e6_grounding": {
+    "executed_runs_evaluated": 134,
+    "total_summary_numbers": 259,
+    "grounded_numbers_count": 156,
+    "numeric_grounding_rate": 0.6023,
+    "numeric_grounding_ci_95": [
+      0.5416,
+      0.66
+    ],
+    "fully_grounded_summaries_count": 78,
+    "fully_grounded_summary_rate": 0.5821,
+    "fully_grounded_summary_ci_95": [
+      0.4974,
+      0.6622
+    ]
+  }
+}
