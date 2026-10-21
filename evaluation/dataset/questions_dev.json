@@ -1,0 +1,109 @@
+[
+  {
+    "id": "DEV-01",
+    "dataset": "synthetic_sales.csv",
+    "category": "simple_aggregate",
+    "question": "What is the total sum of sales_amount?",
+    "type": "numeric",
+    "ground_truth": 758584.41,
+    "tolerance": 0.01
+  },
+  {
+    "id": "DEV-02",
+    "dataset": "synthetic_sales.csv",
+    "category": "groupby",
+    "question": "Which region has the highest total profit?",
+    "type": "categorical",
+    "ground_truth": "North"
+  },
+  {
+    "id": "DEV-03",
+    "dataset": "synthetic_sales.csv",
+    "category": "filtering",
+    "question": "How many orders have a discount greater than 0.15?",
+    "type": "numeric",
+    "ground_truth": 204,
+    "tolerance": 0.0
+  },
+  {
+    "id": "DEV-04",
+    "dataset": "synthetic_hr.csv",
+    "category": "simple_aggregate",
+    "question": "What is the average salary across all employees?",
+    "type": "numeric",
+    "ground_truth": 114155.38,
+    "tolerance": 0.05
+  },
+  {
+    "id": "DEV-05",
+    "dataset": "synthetic_hr.csv",
+    "category": "top_k",
+    "question": "What is the highest tenure_years recorded in the dataset?",
+    "type": "numeric",
+    "ground_truth": 14,
+    "tolerance": 0.0
+  },
+  {
+    "id": "DEV-06",
+    "dataset": "synthetic_hr.csv",
+    "category": "percentages",
+    "question": "What is the overall attrition rate as a percentage of employees with attrition equal to Yes?",
+    "type": "numeric",
+    "ground_truth": 9.6,
+    "tolerance": 0.1
+  },
+  {
+    "id": "DEV-07",
+    "dataset": "synthetic_sensor.csv",
+    "category": "simple_aggregate",
+    "question": "What is the maximum temperature_c recorded across all sensors?",
+    "type": "numeric",
+    "ground_truth": 92.18,
+    "tolerance": 0.01
+  },
+  {
+    "id": "DEV-08",
+    "dataset": "synthetic_sensor.csv",
+    "category": "filtering",
+    "question": "How many readings have status equal to Critical?",
+    "type": "numeric",
+    "ground_truth": 73,
+    "tolerance": 0.0
+  },
+  {
+    "id": "DEV-09",
+    "dataset": "synthetic_sensor.csv",
+    "category": "groupby",
+    "question": "What is the average pressure_kpa for sensor SENSOR-A?",
+    "type": "numeric",
+    "ground_truth": 101.1,
+    "tolerance": 0.05
+  },
+  {
+    "id": "DEV-10",
+    "dataset": "synthetic_messy.csv",
+    "category": "missing_values",
+    "question": "How many missing or null values are there in the category column?",
+    "type": "numeric",
+    "ground_truth": 20,
+    "tolerance": 0.0
+  },
+  {
+    "id": "DEV-11",
+    "dataset": "synthetic_messy.csv",
+    "category": "simple_aggregate",
+    "question": "What is the total sum of units_sold?",
+    "type": "numeric",
+    "ground_truth": 7522.0,
+    "tolerance": 0.05
+  },
+  {
+    "id": "DEV-12",
+    "dataset": "synthetic_sales.csv",
+    "category": "chart_request",
+    "question": "Plot a bar chart of total sales_amount by region and print the total sales of the West region.",
+    "type": "numeric",
+    "ground_truth": 157171.34,
+    "tolerance": 0.05
+  }
+]

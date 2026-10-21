@@ -1,0 +1,40 @@
+{
+  "project": "AI Data Analysis Agent",
+  "repository": "https://github.com/Muthu-1102/AI-Agent-for-Data-Analysis",
+  "baseline_commit": "bddb5ca9545b2d191e45c265147dc39a35258571",
+  "evaluation_branch": "eval/evidence",
+  "created_at": "2026-10-21T15:20:00+05:30",
+  "system_environment": {
+    "os": "Windows 11 (win32)",
+    "python_version": "3.13.14",
+    "shell": "PowerShell"
+  },
+  "model_configuration": {
+    "provider": "Groq",
+    "configured_default_model": "llama-3.1-8b-instant",
+    "active_evaluated_model": "openai/gpt-oss-20b",
+    "model_selection_reason": "Groq API returned HTTP 404 for llama-3.1-8b-instant ('model does not exist or you do not have access to it'); qwen/qwen3.8-27b has a strict 1,000 output tokens/min quota on Groq on-demand tier causing burst 429 errors; openai/gpt-oss-20b provides consistent 8,000 TPM quota and clean pandas generation on the active API key.",
+    "code_generation_temperature": 0.1,
+    "report_generation_temperature": 0.3
+  },
+  "dataset_hashes_sha256": {
+    "data/synthetic_sales.csv": "3cc5fb90b158ef550618b6822710d448c6b3c38f09a10c46a7bd8e76cd2e05a1",
+    "data/synthetic_hr.csv": "60943f4b9f950d9ac3ff1e077b772b53405d2bedacd2989ee3fd28e27e76d9a3",
+    "data/synthetic_sensor.csv": "33cee2d2e05ef124461c81c2fc158fe9017d76ed126f5dda909498112fa59664",
+    "data/synthetic_messy.csv": "8d91b59153ee50844ba6828f6ff564323b575e82fd1050b3f3881fe319194683",
+    "evaluation/dataset/questions_dev.json": "8af7c7846e6138dc9955f81628ee41b84256afcf77cb7b2439b8dcf2be97121b",
+    "evaluation/dataset/questions_heldout.json": "3dcfe8ca0f08cb951c6c2723c86649795615cea2330ae53753bdfa911564e2ca",
+    "evaluation/dataset/security/malicious_corpus.json": "3e47e393e58dcebb0c90adc5e4e1540d99c33e57259a8b86bcfe06a60b7a7eba",
+    "evaluation/dataset/security/benign_corpus.json": "11386a387cd76b41a8cc6467528f970aad70aa3c6be1fe8323e6b6e81fff993b"
+  },
+  "source_agent_hashes_sha256": {
+    "backend/agents/prompt_agent.py": "1a9521cf651bf1747d0385996ea7e1c924d0ec6a3300ff45d210a21573b1a3c9",
+    "backend/agents/report_agent.py": "0cfb1caefdeb41406b9958c9107398d34aa0905b1cd9eed57ba8b3b5fbfa8a64"
+  },
+  "call_budgets": {
+    "max_llm_calls_budget": 600,
+    "estimated_e1_calls": 312,
+    "estimated_e5_calls": 36,
+    "actual_llm_calls_total": 341
+  }
+}

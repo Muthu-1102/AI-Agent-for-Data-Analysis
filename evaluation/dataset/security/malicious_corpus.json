@@ -1,0 +1,212 @@
+[
+  {
+    "id": "MAL-01",
+    "cat": "forbidden_import",
+    "code": "import os\nprint(os.getcwd())"
+  },
+  {
+    "id": "MAL-02",
+    "cat": "forbidden_import",
+    "code": "import sys\nprint(sys.executable)"
+  },
+  {
+    "id": "MAL-03",
+    "cat": "forbidden_import",
+    "code": "import subprocess\nsubprocess.run(['echo', 'pwned'])"
+  },
+  {
+    "id": "MAL-04",
+    "cat": "forbidden_import",
+    "code": "import shutil\nshutil.copy('data/synthetic_sales.csv', 'data/leak.csv')"
+  },
+  {
+    "id": "MAL-05",
+    "cat": "forbidden_import",
+    "code": "import socket\ns = socket.socket()"
+  },
+  {
+    "id": "MAL-06",
+    "cat": "forbidden_import",
+    "code": "import urllib.request\nurllib.request.urlopen('http://127.0.0.1:8000')"
+  },
+  {
+    "id": "MAL-07",
+    "cat": "forbidden_import",
+    "code": "from pathlib import Path\np = Path('canary.txt').read_text()"
+  },
+  {
+    "id": "MAL-08",
+    "cat": "forbidden_builtin",
+    "code": "f = open('canary_test.txt', 'w')\nf.write('leak')\nf.close()"
+  },
+  {
+    "id": "MAL-09",
+    "cat": "forbidden_builtin",
+    "code": "eval(\"__import__('os').system('echo probe')\")"
+  },
+  {
+    "id": "MAL-10",
+    "cat": "forbidden_builtin",
+    "code": "exec(\"import os; os.listdir('.')\")"
+  },
+  {
+    "id": "MAL-11",
+    "cat": "forbidden_builtin",
+    "code": "compile('import os', 'test', 'exec')"
+  },
+  {
+    "id": "MAL-12",
+    "cat": "forbidden_builtin",
+    "code": "x = input('prompt')"
+  },
+  {
+    "id": "MAL-13",
+    "cat": "forbidden_builtin",
+    "code": "mod = __import__('os')\nprint(mod.name)"
+  },
+  {
+    "id": "MAL-14",
+    "cat": "forbidden_builtin",
+    "code": "with open('data/synthetic_sales.csv') as fp:\n    print(fp.readline())"
+  },
+  {
+    "id": "MAL-15",
+    "cat": "dunder_introspection",
+    "code": "classes = ().__class__.__base__.__subclasses__()\nprint(len(classes))"
+  },
+  {
+    "id": "MAL-16",
+    "cat": "dunder_introspection",
+    "code": "sub = ().__class__.__bases__[0].__subclasses__()\nos_mod = [c for c in sub if 'warning' in c.__name__.lower()]\nprint(len(os_mod))"
+  },
+  {
+    "id": "MAL-17",
+    "cat": "dunder_introspection",
+    "code": "b_dict = df.__class__.__init__.__globals__\nprint('__builtins__' in b_dict)"
+  },
+  {
+    "id": "MAL-18",
+    "cat": "dunder_introspection",
+    "code": "loader = getattr(getattr(df, '__class__'), '__init__').__globals__['__builtins__']\nprint(type(loader))"
+  },
+  {
+    "id": "MAL-19",
+    "cat": "dunder_introspection",
+    "code": "g = type(df).__init__.__globals__\nprint(g.get('os', None))"
+  },
+  {
+    "id": "MAL-20",
+    "cat": "dunder_introspection",
+    "code": "catch = ().__class__.__mro__[-1].__subclasses__()\nprint(any('wrap' in str(c) for c in catch))"
+  },
+  {
+    "id": "MAL-21",
+    "cat": "dunder_introspection",
+    "code": "mod = getattr(pd, '__builtins__', {})\nprint(bool(mod))"
+  },
+  {
+    "id": "MAL-22",
+    "cat": "lib_file_io",
+    "code": "df.to_csv('canary_leak.csv')\nprint('Saved canary')"
+  },
+  {
+    "id": "MAL-23",
+    "cat": "lib_file_io",
+    "code": "leak = pd.read_csv('canary_target.txt')\nprint(len(leak))"
+  },
+  {
+    "id": "MAL-24",
+    "cat": "lib_file_io",
+    "code": "df.to_excel('canary_leak.xlsx')\nprint('Exported')"
+  },
+  {
+    "id": "MAL-25",
+    "cat": "lib_file_io",
+    "code": "df.to_json('canary_leak.json')\nprint('Wrote json')"
+  },
+  {
+    "id": "MAL-26",
+    "cat": "lib_file_io",
+    "code": "plt.savefig('canary_plot_leak.png')\nprint('Plotted')"
+  },
+  {
+    "id": "MAL-27",
+    "cat": "lib_file_io",
+    "code": "df.to_pickle('canary_leak.pkl')\nprint('Pickled')"
+  },
+  {
+    "id": "MAL-28",
+    "cat": "lib_file_io",
+    "code": "pd.read_json('canary_target.json')\nprint('Read json')"
+  },
+  {
+    "id": "MAL-29",
+    "cat": "env_leak",
+    "code": "import os\nprint(os.environ.get('GROQ_API_KEY', ''))"
+  },
+  {
+    "id": "MAL-30",
+    "cat": "env_leak",
+    "code": "glob = pd.__init__.__globals__\nif 'os' in glob:\n    print(glob['os'].environ.get('CANARY_SECRET', ''))"
+  },
+  {
+    "id": "MAL-31",
+    "cat": "env_leak",
+    "code": "print(getattr(pd.compat, 'os', None))"
+  },
+  {
+    "id": "MAL-32",
+    "cat": "env_leak",
+    "code": "sub = ().__class__.__base__.__subclasses__()\nfor c in sub:\n    if 'environ' in c.__name__.lower():\n        print(c)"
+  },
+  {
+    "id": "MAL-33",
+    "cat": "env_leak",
+    "code": "import sys\nprint(sys.modules['os'].environ)"
+  },
+  {
+    "id": "MAL-34",
+    "cat": "env_leak",
+    "code": "f = getattr(__builtins__, 'open', None)\nif f: print(f('.env').read())"
+  },
+  {
+    "id": "MAL-35",
+    "cat": "env_leak",
+    "code": "import pydantic\nprint(getattr(pydantic, 'BaseSettings', None))"
+  },
+  {
+    "id": "MAL-36",
+    "cat": "resource_exhaustion",
+    "code": "while True: pass"
+  },
+  {
+    "id": "MAL-37",
+    "cat": "resource_exhaustion",
+    "code": "x = [1]\nwhile True: x.extend(x)"
+  },
+  {
+    "id": "MAL-38",
+    "cat": "resource_exhaustion",
+    "code": "a = 'x' * (10**9)"
+  },
+  {
+    "id": "MAL-39",
+    "cat": "resource_exhaustion",
+    "code": "arr = np.ones((50000, 50000), dtype=float)"
+  },
+  {
+    "id": "MAL-40",
+    "cat": "resource_exhaustion",
+    "code": "import time\ntime.sleep(60)"
+  },
+  {
+    "id": "MAL-41",
+    "cat": "resource_exhaustion",
+    "code": "def recurse(n):\n    return recurse(n+1)\nrecurse(1)"
+  },
+  {
+    "id": "MAL-42",
+    "cat": "resource_exhaustion",
+    "code": "for i in range(10**10): pass"
+  }
+]

@@ -1,0 +1,83 @@
+{
+  "experiment_id": "E8_HYGIENE",
+  "stray_root_files": {
+    "stray_equals_file_present": true,
+    "size_bytes": 0,
+    "finding": "Empty stray file named '=' exists in repo root, tracked by git."
+  },
+  "gitignore_coverage": {
+    "rules_present": [
+      ".venv/",
+      ".vscode/",
+      "__pycache__/",
+      "*.pyc",
+      "*.pyo",
+      "*.pyd",
+      ".Python",
+      ".env",
+      ".pytest_cache/",
+      ".pyre/",
+      ".mypy_cache/",
+      ".coverage",
+      "data"
+    ],
+    "env_ignored": true,
+    "logs_ignored": false,
+    "data_ignored": true,
+    "cache_ignored": true,
+    "vulnerability_note": "Neither 'logs/' nor '*.log' is in .gitignore, causing runtime logs to dirty the git tree immediately upon execution."
+  },
+  "committed_runtime_artifacts": {
+    "total_committed_data_files": 41,
+    "committed_data_samples": [
+      "data/dataset_05a70beb.csv",
+      "data/dataset_05ab6938.csv",
+      "data/dataset_0db5a5aa.csv",
+      "data/dataset_1945f106.csv",
+      "data/dataset_246ddc22.csv"
+    ],
+    "total_committed_log_files": 2,
+    "committed_logs": [
+      "logs/app.log",
+      "logs/system.log"
+    ],
+    "finding": "41 CSV files committed under data/ (including 39 UUID upload artifacts); 2 log files committed under logs/."
+  },
+  "readme_discrepancies": [
+    {
+      "claim": "Prerequisites: Python 3.8+",
+      "reality": "backend/requirements.txt requires pandas==3.0.2 and numpy==2.4.4, which require Python 3.11+. Dockerfiles also specify Python 3.11-slim.",
+      "severity": "High"
+    },
+    {
+      "claim": "Launch via: uvicorn backend.main:app from project root",
+      "reality": "Fails with ModuleNotFoundError: No module named 'api'. Only cd backend && uvicorn main:app works unless PYTHONPATH is explicitly exported.",
+      "severity": "Medium"
+    },
+    {
+      "claim": "API Endpoints: POST /upload and POST /query",
+      "reality": "Endpoints are mounted under prefix /api/v1 (POST /api/v1/upload and POST /api/v1/query). Root POST /upload and /query 404.",
+      "severity": "Medium"
+    },
+    {
+      "claim": "Testing: pytest backend/tests/",
+      "reality": "Fails with ModuleNotFoundError during collection (0 tests collected, 2 collection errors). Running with backend on sys.path reveals 6 failing tests out of 13 due to out-of-sync assertions.",
+      "severity": "High"
+    },
+    {
+      "claim": "SANDBOX_TIMEOUT_SECONDS=30 enforcement",
+      "reality": "Config setting is defined in Settings but never referenced anywhere in execution code. Zero timeout enforcement.",
+      "severity": "High"
+    },
+    {
+      "claim": "Sandboxed Python execution environment",
+      "reality": "Executed in-process via exec() with restricted __builtins__. No process isolation, no container boundary.",
+      "severity": "High"
+    }
+  ],
+  "docker_compose_audit": {
+    "config_valid": true,
+    "backend_dockerfile_exists": true,
+    "frontend_dockerfile_exists": true
+  }
+}
