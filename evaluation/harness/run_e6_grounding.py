@@ -177,6 +177,7 @@ def run_e6_analysis(input_jsonl: str, output_jsonl: str):
     print(f"Raw results saved to {output_jsonl}")
 
 if __name__ == "__main__":
-    e1_heldout = "evaluation/results/baseline/e1_heldout_raw.jsonl"
-    e6_out = "evaluation/results/baseline/e6_grounding_raw.jsonl"
+    mode = sys.argv[1] if len(sys.argv) > 1 else "baseline"
+    e1_heldout = f"evaluation/results/{mode}/e1_heldout_raw.jsonl"
+    e6_out = f"evaluation/results/{mode}/e6_grounding_raw.jsonl"
     run_e6_analysis(e1_heldout, e6_out)

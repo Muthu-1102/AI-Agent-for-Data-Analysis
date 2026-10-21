@@ -264,13 +264,22 @@ async def run_cohort(questions_path: str, output_jsonl: str, repetitions: int = 
     return records
 
 if __name__ == "__main__":
+    target_mode = sys.argv[1] if len(sys.argv) > 1 else "baseline"
     dev_path = "evaluation/dataset/questions_dev.json"
     heldout_path = "evaluation/dataset/questions_heldout.json"
     
-    # 1. Run Dev Cohort (1 rep)
-    print("=== EXECUTING DEV COHORT ===")
-    asyncio.run(run_cohort(dev_path, "evaluation/results/baseline/e1_dev_raw.jsonl", repetitions=1, delay_sec=1.2))
+    out_dev = f"evaluation/results/{target_mode}/e1_dev_raw.jsonl"
+    out_heldout = f"evaluation/results/{target_mode}/e1_heldout_raw.jsonl"
     
-    # 2. Run Held-Out Cohort (3 reps)
-    print("\n=== EXECUTING FROZEN HELD-OUT COHORT (3 REPETITIONS) ===")
-    asyncio.run(run_cohort(heldout_path, "evaluation/results/baseline/e1_heldout_raw.jsonl", repetitions=3, delay_sec=1.2))
+    if target_mode == "after":
+        # Run held-out evaluation directly for post-improvement benchmarking
+        print(f"\n=== EXECUTING FROZEN HELD-OUT COHORT (AFTER IMPROVEMENTS) -> {out_heldout} ===")
+        asyncio.run(run_cohort(heldout_path, out_heldout, repetitions=3, delay_sec=1.5))
+    else:
+        # 1. Run Dev Cohort (1 rep)
+        print("=== EXECUTING DEV COHORT ===")
+        asyncio.run(run_cohort(dev_path, out_dev, repetitions=1, delay_sec=1.2))
+        
+        # 2. Run Held-Out Cohort (3 reps)
+        print(f"\n=== EXECUTING FROZEN HELD-OUT COHORT (3 REPETITIONS) -> {out_heldout} ===")
+        asyncio.run(run_cohort(heldout_path, out_heldout, repetitions=3, delay_sec=1.2))

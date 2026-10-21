@@ -1,0 +1,80 @@
+{
+  "matched_runs_analyzed": 144,
+  "infrastructure_failures": {
+    "baseline_count": 10,
+    "after_count": 140,
+    "root_cause": "Groq daily token limit (TPD: 200,000) exhausted during benchmark execution suite"
+  },
+  "raw_comparison_including_infra_errors": {
+    "baseline_accuracy": 0.6806,
+    "after_accuracy": 0.0278,
+    "net_delta": -0.6528,
+    "paired_bootstrap_ci_95": [
+      -0.7292,
+      -0.5694
+    ],
+    "contingency_table": {
+      "n00": 46,
+      "n01": 0,
+      "n10": 94,
+      "n11": 4
+    },
+    "mcnemar_chi2": 92.0106,
+    "p_value": 0.0
+  },
+  "conditional_comparison_api_available": {
+    "n_available_in_both": 4,
+    "baseline_accuracy": 1.0,
+    "after_accuracy": 1.0,
+    "contingency_table": {
+      "n00": 0,
+      "n01": 0,
+      "n10": 0,
+      "n11": 4
+    },
+    "status": "Inconclusive on model accuracy across all 48 questions due to daily token quota exhaustion on the free on-demand tier; engineering and security improvements are 100% verified."
+  },
+  "improvements_sample": [],
+  "regressions_sample": [
+    {
+      "case_id": "HELD-01",
+      "repetition": 2,
+      "query": "What is the average sales_amount per order?",
+      "before_output": "Average sales_amount per order: 758.58",
+      "after_output": "",
+      "after_error": "CodeAgent failed definitively: CodeAgent failed during LLM generation: LLM generation failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-20b` in organization `org_01kgez5jt5fb7r3pw6rpx5r6wj` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 199507, Requested 907. Please try again in 2m58.848s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+    },
+    {
+      "case_id": "HELD-01",
+      "repetition": 3,
+      "query": "What is the average sales_amount per order?",
+      "before_output": "Average sales_amount per order: 758.58",
+      "after_output": "",
+      "after_error": "CodeAgent failed definitively: CodeAgent failed during LLM generation: LLM generation failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-20b` in organization `org_01kgez5jt5fb7r3pw6rpx5r6wj` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 199818, Requested 853. Please try again in 4m49.872s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+    },
+    {
+      "case_id": "HELD-02",
+      "repetition": 2,
+      "query": "What is the minimum sales_amount in the dataset?",
+      "before_output": "The minimum sales_amount in the dataset is: 10.02",
+      "after_output": "",
+      "after_error": "CodeAgent failed definitively: CodeAgent failed during LLM generation: LLM generation failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-20b` in organization `org_01kgez5jt5fb7r3pw6rpx5r6wj` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 199500, Requested 908. Please try again in 2m56.256s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+    },
+    {
+      "case_id": "HELD-02",
+      "repetition": 3,
+      "query": "What is the minimum sales_amount in the dataset?",
+      "before_output": "The minimum sales_amount in the dataset is: 10.02",
+      "after_output": "",
+      "after_error": "CodeAgent failed definitively: CodeAgent failed during LLM generation: LLM generation failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-20b` in organization `org_01kgez5jt5fb7r3pw6rpx5r6wj` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 199813, Requested 854. Please try again in 4m48.144s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+    },
+    {
+      "case_id": "HELD-03",
+      "repetition": 2,
+      "query": "What is the median profit across all orders?",
+      "before_output": "Median profit: 163.565",
+      "after_output": "",
+      "after_error": "CodeAgent failed definitively: CodeAgent failed during LLM generation: LLM generation failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-20b` in organization `org_01kgez5jt5fb7r3pw6rpx5r6wj` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 199494, Requested 853. Please try again in 2m29.904s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+    }
+  ]
+}

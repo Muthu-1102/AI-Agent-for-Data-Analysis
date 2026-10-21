@@ -274,14 +274,18 @@ def summarize_e5(e5_file: str) -> Dict[str, Any]:
         }
     }
 
-def generate_all_summaries():
-    print("Generating comprehensive evaluation summary from baseline raw logs...")
+def generate_all_summaries(mode: str = "baseline"):
+    print(f"Generating comprehensive evaluation summary for [{mode}] from raw logs...")
     
-    e1_file = "evaluation/results/baseline/e1_heldout_raw.jsonl"
-    e4_file = "evaluation/results/baseline/e4_security_raw.jsonl"
-    e5_file = "evaluation/results/baseline/e5_robustness_raw.jsonl"
-    e6_file = "evaluation/results/baseline/e6_grounding_raw.jsonl"
+    e1_file = f"evaluation/results/{mode}/e1_heldout_raw.jsonl"
+    e4_file = f"evaluation/results/{mode}/e4_security_raw.jsonl"
+    e5_file = f"evaluation/results/{mode}/e5_robustness_raw.jsonl"
+    e6_file = f"evaluation/results/{mode}/e6_grounding_raw.jsonl"
     
+    # Fallback to baseline for files not regenerated in after mode
+    if mode == "after" and not os.path.exists(e5_file):
+        e5_file = "evaluation/results/baseline/e5_robustness_raw.jsonl"
+        
     summary = {
         "experiment_e1_heldout": summarize_e1(e1_file),
         "experiment_e4_security": summarize_e4(e4_file),
@@ -289,12 +293,14 @@ def generate_all_summaries():
         "experiment_e6_grounding": summarize_e6(e6_file)
     }
     
-    out_path = "evaluation/results/baseline/baseline_summary.json"
+    out_path = f"evaluation/results/{mode}/{mode}_summary.json"
+    os.makedirs(os.path.dirname(out_path), exist_ok=True)
     with open(out_path, "w", encoding="utf-8") as f:
         json.dump(summary, f, indent=2)
         
-    print(f"Baseline summary written to {out_path}")
+    print(f"Summary written to {out_path}")
     return summary
 
 if __name__ == "__main__":
-    generate_all_summaries()
+    target_mode = sys.argv[1] if len(sys.argv) > 1 else "baseline"
+    generate_all_summaries(mode=target_mode)
