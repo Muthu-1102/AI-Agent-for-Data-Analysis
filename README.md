@@ -14,7 +14,7 @@ A multi-agent AI system for automated data analysis using natural language queri
 
 ### Prerequisites
 
-- Python 3.8+
+- Python 3.11+ (Required by pandas>=3.0 and numpy>=2.0)
 - Groq API key
 
 ### Installation
@@ -46,12 +46,7 @@ A multi-agent AI system for automated data analysis using natural language queri
 From the project root:
 ```bash
 cd backend
-uvicorn main:app --reload --host 0.0.0.0 --port 8000
-```
-
-Or from project root:
-```bash
-uvicorn backend.main:app --reload --host 0.0.0.0 --port 8000
+python -m uvicorn main:app --reload --host 0.0.0.0 --port 8000
 ```
 
 ### Frontend
@@ -77,9 +72,17 @@ streamlit run app.py --server.port 8501 --server.address 0.0.0.0
 
 ## API Endpoints
 
-- `GET /health` - Health check
-- `POST /upload` - Upload CSV file
-- `POST /query` - Process natural language query
+- `GET /health` - Root health check
+- `POST /api/v1/upload` - Upload CSV file (enforces 50MB limit & path sanitization)
+- `POST /api/v1/query` - Process natural language query through multi-agent pipeline
+
+*Note: Core data analysis endpoints are mounted under the `/api/v1` route prefix.*
+
+## Code Execution & Security
+
+- **AST Security Visitor**: Generated code is parsed into an abstract syntax tree and inspected before execution. Blocks dunder introspection (`__class__`, `__subclasses__`), unauthorized imports, dangerous builtins, and disk write primitives (`to_csv`, `to_pickle`).
+- **Subprocess Isolation**: Code executes in a separate Python subprocess with a hard wall-clock timeout (`SANDBOX_TIMEOUT_SECONDS=30`) to protect the backend from infinite loops or CPU exhaustion.
+- **Production Boundary**: For public multi-tenant environments, execution should be further isolated inside containerized or microVM sandboxes (e.g., Docker/gVisor).
 
 ## Project Structure
 
@@ -91,25 +94,32 @@ streamlit run app.py --server.port 8501 --server.address 0.0.0.0
 │   │   ├── routes.py        # API endpoints
 │   │   └── schemas.py       # Pydantic models
 │   ├── core/
-│   │   └── orchestrator.py  # Multi-agent orchestrator
-│   ├── agents/              # AI agents
+│   │   └── orchestrator.py  # Multi-agent orchestrator with self-repair
+│   ├── agents/              # AI agents (Schema, Prompt, Code, Validation, Execution, Report)
 │   ├── services/            # External services (LLM, file handling)
-│   └── utils/               # Utilities
+│   └── utils/               # Utilities (Sandbox, AST visitor, Logger)
 ├── frontend/
 │   ├── app.py               # Streamlit application
 │   ├── api_client.py        # Backend API client
 │   └── components.py        # UI components
+├── evaluation/              # Empirical evaluation framework & benchmark suite
 ├── data/                    # Sample datasets
 └── logs/                    # Application logs
 ```
 
-## Development
+## Development & Testing
 
-Run tests:
+Run backend tests from the `backend/` directory:
 ```bash
-pytest backend/tests/
+cd backend
+python -m pytest tests/
+```
+
+Run evaluation test suites:
+```bash
+python -m pytest evaluation/harness/test_matcher.py
 ```
 
 ## License
 
-MIT License
+MIT License
