@@ -72,7 +72,9 @@ Based on this raw output and the generated chart (if present), write a clear, co
 - DO NOT mention the python code, terminal, or "the output above".
 - Act as if YOU analyzed the data yourself.
 - Use markdown formatting (bullet points, bold text) to make it highly readable.
-- If it seems numbers are broken or malformed in the raw output, try to elegantly infer the closest reasonable metric or mention the discrepancy.
+- Strictly base all numbers, statistics, and findings exclusively on the raw computation output.
+- Do NOT fabricate, assume, or infer numbers that do not appear in the computation output.
+- If a metric is NaN, missing, or could not be computed, state that fact explicitly without guessing.
 """
         
         try:
@@ -80,7 +82,7 @@ Based on this raw output and the generated chart (if present), write a clear, co
             insights_summary = await self.llm_service.generate_response(
                 prompt=prompt,
                 temperature=0.3, # Slightly higher temperature for fluent natural language
-                max_tokens=2048
+                max_tokens=1024
             )
             
         except Exception as e:

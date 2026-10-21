@@ -29,12 +29,21 @@ class CodeAgent(PipelineStep):
         if not structured_prompt:
             raise ValueError("CodeAgent requires 'structured_prompt' in the state context.")
             
+        prompt_to_send = structured_prompt
+        repair_feedback = state.get("repair_feedback")
+        if repair_feedback:
+            prompt_to_send += (
+                f"\n\n=== REPAIR FEEDBACK (PREVIOUS ATTEMPT FAILED) ===\n"
+                f"The previously generated code failed with the following error:\n{repair_feedback}\n\n"
+                f"Please correct the code to resolve this exact error. Output ONLY valid, executable Python code."
+            )
+            
         try:
             # Call centralized LLM logic
             raw_response = await self.llm_service.generate_response(
-                prompt=structured_prompt,
+                prompt=prompt_to_send,
                 temperature=0.1,  # Low temperature for highly deterministic, focused code output
-                max_tokens=4096
+                max_tokens=1024
             )
             
             # Extract clean Python code (often wrapped in ```python ... ``` by LLMs)

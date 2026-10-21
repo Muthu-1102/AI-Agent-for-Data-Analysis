@@ -48,25 +48,66 @@ class Orchestrator:
             # Step 2: PromptAgent → builds structured_prompt
             state = await self._run_agent(self.prompt_agent, state)
             
-            # Step 3: CodeAgent → produces generated_code, raw_llm_response
-            state = await self._run_agent(self.code_agent, state)
+            # Feedback-driven Self-Repair Loop: CodeAgent -> ValidationAgent -> ExecutionAgent
+            max_repair_attempts = settings.MAX_RETRIES
+            repair_attempt = 0
+            code_exec_ok = False
+            last_repair_error = None
             
-            # Step 4: ValidationAgent → validation_passed, validation_message
-            state = await self._run_agent(self.validation_agent, state)
-            
-            # Step 5: ExecutionAgent → execution_success, captured_output, error_trace
-            state = await self._run_agent(self.execution_agent, state)
+            while repair_attempt < max_repair_attempts:
+                repair_attempt += 1
+                state["repair_attempt"] = repair_attempt
+                logger.info(f"Self-repair execution cycle ({repair_attempt}/{max_repair_attempts})")
+                
+                # Step 3: CodeAgent (incorporates state['repair_feedback'] if present)
+                state = await self._run_agent(self.code_agent, state)
+                
+                # Step 4: ValidationAgent
+                try:
+                    val_res = await self.validation_agent.process(state)
+                    state.update(val_res)
+                except Exception as val_err:
+                    last_repair_error = f"Code Validation Error: {str(val_err)}"
+                    state["repair_feedback"] = last_repair_error
+                    logger.warning(f"Validation rejected code on cycle {repair_attempt}/{max_repair_attempts}: {str(val_err)}. Feeding error to CodeAgent...")
+                    continue
+                    
+                # Step 5: ExecutionAgent
+                try:
+                    exec_res = await self.execution_agent.process(state)
+                    state.update(exec_res)
+                    if state.get("execution_success"):
+                        code_exec_ok = True
+                        break
+                    else:
+                        last_repair_error = f"Runtime Execution Exception:\n{state.get('error_trace', 'Non-zero returncode')}"
+                        state["repair_feedback"] = last_repair_error
+                        logger.warning(f"Execution failed on cycle {repair_attempt}/{max_repair_attempts}. Feeding traceback to CodeAgent...")
+                        continue
+                except Exception as exec_err:
+                    last_repair_error = f"Execution Exception: {str(exec_err)}"
+                    state["repair_feedback"] = last_repair_error
+                    logger.warning(f"Execution crashed on cycle {repair_attempt}/{max_repair_attempts}: {str(exec_err)}. Feeding traceback to CodeAgent...")
+                    continue
+                    
+            if not code_exec_ok:
+                logger.warning(f"Self-repair loop exhausted after {max_repair_attempts} attempts. Last failure: {last_repair_error}")
             
             # Step 6: ReportAgent → insights_summary, report_generated
             state = await self._run_agent(self.report_agent, state)
             
-            logger.info(f"Pipeline successfully completed for query: '{query}'")
+            is_success = bool(state.get("execution_success", False))
+            status_str = "completed" if is_success else "failed"
+            
+            logger.info(f"Pipeline finished for query: '{query}' with status: {status_str}")
             return {
-                "status": "completed",
+                "status": status_str,
+                "execution_success": is_success,
                 "insights_summary": state.get("insights_summary", ""),
                 "generated_code": state.get("generated_code", ""),
                 "captured_output": state.get("captured_output", ""),
-                "error": None
+                "chart_image_base64": state.get("chart_image_base64"),
+                "error": None if is_success else (state.get("error_trace") or last_repair_error)
             }
             
         except RuntimeError as crit_err:
