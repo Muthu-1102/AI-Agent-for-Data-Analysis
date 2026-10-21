@@ -16,12 +16,8 @@ import math
 import numpy as np
 from typing import Dict, Any, List, Tuple
 
-# Ensure UTF-8 output on Windows consoles
-if hasattr(sys.stdout, "reconfigure"):
-    try:
-        sys.stdout.reconfigure(encoding="utf-8")
-    except Exception:
-        pass
+# Ensure backend and evaluation modules resolve correctly
+sys.path.insert(0, os.path.abspath("."))
 
 def load_jsonl(filepath: str) -> List[Dict[str, Any]]:
     if not os.path.exists(filepath):
@@ -163,8 +159,36 @@ def run_paired_comparison():
     infra_after_count = sum(1 for r in after_records if r.get("outcome_classification") == "INFRA_ERROR")
     infra_base_count = sum(1 for r in base_records if r.get("outcome_classification") == "INFRA_ERROR")
     
+    # Evaluation Harness Audit: Re-score baseline with fixed AnswerMatcher
+    from evaluation.harness.answer_matcher import AnswerMatcher
+    base_rescore_correct = 0
+    base_false_negatives = []
+    for r in base_records:
+        if r.get("captured_output"):
+            spec = {"type": r["expected_type"], "ground_truth": r["ground_truth"], "tolerance": 0.01}
+            is_match, cand, _ = AnswerMatcher.match(r["captured_output"], spec)
+            if is_match:
+                base_rescore_correct += 1
+                if not r.get("computation_correct"):
+                    base_false_negatives.append({
+                        "case_id": r["case_id"],
+                        "repetition": r["repetition"],
+                        "expected": r["ground_truth"],
+                        "matched_candidate": cand,
+                        "raw_output": r["captured_output"][:80]
+                    })
+            elif r.get("computation_correct"):
+                base_rescore_correct += 1
+
     comparison_summary = {
         "matched_runs_analyzed": len(common_keys),
+        "evaluation_harness_audit": {
+            "harness_regex_bug_identified": "Truncation of numbers with >3 digits without thousands-commas (e.g. 758584.41 -> 758.0)",
+            "baseline_false_negatives_count": len(base_false_negatives),
+            "baseline_as_logged_raw_accuracy": round(base_acc_raw, 4),
+            "baseline_rescaled_audited_accuracy": round(base_rescore_correct / len(base_records), 4) if base_records else 0.0,
+            "sample_false_negatives": base_false_negatives[:5]
+        },
         "infrastructure_failures": {
             "baseline_count": infra_base_count,
             "after_count": infra_after_count,

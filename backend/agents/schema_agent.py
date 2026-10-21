@@ -24,10 +24,9 @@ class SchemaAgent(PipelineStep):
         if not file_id:
             raise ValueError("SchemaAgent requires a valid 'file_id' in the state context.")
 
-        # Use the centralised helper to resolve the actual path on disk
-        file_path = resolve_dataset_path(file_id)
-
         try:
+            # Use the centralised helper to resolve the actual path on disk
+            file_path = resolve_dataset_path(file_id)
             df = load_and_clean_dataset(file_id, nrows=1000)
 
             # Build per-column detail objects
@@ -54,6 +53,6 @@ class SchemaAgent(PipelineStep):
             return {"schema_info": schema.model_dump()}
 
         except FileNotFoundError:
-            raise RuntimeError(f"Data file could not be found: {file_path}")
+            raise RuntimeError(f"Data file could not be found: {file_id}")
         except Exception as e:
             raise RuntimeError(f"SchemaAgent failed to extract schema for '{file_id}': {str(e)}")

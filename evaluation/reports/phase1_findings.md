@@ -11,10 +11,10 @@
 ## 1. Environment & Python Version Constraints
 
 ### Finding
-The repository's [README.md](file:///d:/Projects/Agent%20for%20Data%20Analysis/README.md) states:
+The repository's [README.md](../../README.md) states:
 > Prerequisites: Python 3.8+
 
-However, [backend/requirements.txt](file:///d:/Projects/Agent%20for%20Data%20Analysis/backend/requirements.txt) pins:
+However, [backend/requirements.txt](../../backend/requirements.txt) pins:
 ```text
 pandas==3.0.2
 numpy==2.4.4
@@ -22,7 +22,7 @@ fastapi==0.136.1
 ```
 - `numpy >= 2.0` dropped support for Python 3.8 and 3.9; it requires Python 3.10+.
 - `pandas 3.0+` requires Python 3.11+.
-- The repository Dockerfiles ([backend/Dockerfile](file:///d:/Projects/Agent%20for%20Data%20Analysis/backend/Dockerfile) and [frontend/Dockerfile](file:///d:/Projects/Agent%20for%20Data%20Analysis/frontend/Dockerfile)) specify:
+- The repository Dockerfiles ([backend/Dockerfile](../../backend/Dockerfile) and [frontend/Dockerfile](../../frontend/Dockerfile)) specify:
   `FROM python:3.11-slim`
 - **True Minimum Python Version**: Python 3.11+.
 - Python version used in this evaluation: **Python 3.13.14**.
@@ -108,7 +108,7 @@ The README states:
 
 ### (a) "Retry" Mechanism
 - **Claimed**: Multi-agent recovery / retries on failure.
-- **Actual Implementation** ([backend/core/orchestrator.py:92-123](file:///d:/Projects/Agent%20for%20Data%20Analysis/backend/core/orchestrator.py#L92-L123)):
+- **Actual Implementation** ([backend/core/orchestrator.py:92-123](../../backend/core/orchestrator.py#L92-L123)):
   - The retry loop in `Orchestrator._run_agent` executes:
     ```python
     while attempts < max_retries:
@@ -125,10 +125,10 @@ The README states:
   - Furthermore, if `ExecutionAgent` throws an exception, `ExecutionAgent.process` catches it internally and does not raise, so `_run_agent` does not retry at all.
 
 ### (b) `SANDBOX_TIMEOUT_SECONDS`
-- **Claimed**: Configuration setting `SANDBOX_TIMEOUT_SECONDS=30` in [backend/config.py](file:///d:/Projects/Agent%20for%20Data%20Analysis/backend/config.py) and [example.env](file:///d:/Projects/Agent%20for%20Data%20Analysis/example.env).
+- **Claimed**: Configuration setting `SANDBOX_TIMEOUT_SECONDS=30` in [backend/config.py](../../backend/config.py) and [example.env](../../example.env).
 - **Actual Implementation**:
   - `SANDBOX_TIMEOUT_SECONDS` is defined in `Settings` but is **never referenced or imported anywhere else in the entire repository**.
-  - Code execution in [backend/agents/execution_agent.py:80](file:///d:/Projects/Agent%20for%20Data%20Analysis/backend/agents/execution_agent.py#L80) uses:
+  - Code execution in [backend/agents/execution_agent.py:80](../../backend/agents/execution_agent.py#L80) uses:
     ```python
     exec(generated_code, safe_globals, safe_locals)
     ```
@@ -144,7 +144,7 @@ The README states:
 
 ### (d) Status Truthfulness (`status: "completed"`)
 - **Actual Implementation**:
-  - In [backend/agents/execution_agent.py:83-86](file:///d:/Projects/Agent%20for%20Data%20Analysis/backend/agents/execution_agent.py#L83-L86), execution errors are caught:
+  - In [backend/agents/execution_agent.py:83-86](../../backend/agents/execution_agent.py#L83-L86), execution errors are caught:
     ```python
     except Exception as e:
         execution_success = False
@@ -170,7 +170,7 @@ The README states:
 ## 6. Docker & Container Readiness
 - `docker --version`: `Docker version 29.5.2, build 79eb04c`
 - `docker compose config`: Valid configuration.
-- [backend/Dockerfile](file:///d:/Projects/Agent%20for%20Data%20Analysis/backend/Dockerfile) and [frontend/Dockerfile](file:///d:/Projects/Agent%20for%20Data%20Analysis/frontend/Dockerfile) both exist.
+- [backend/Dockerfile](../../backend/Dockerfile) and [frontend/Dockerfile](../../frontend/Dockerfile) both exist.
 
 ---
 
@@ -187,8 +187,8 @@ The README states:
 ---
 
 ## 8. Windows Console Encoding Anomaly in `logger.py`
-- In [backend/utils/logger.py:31](file:///d:/Projects/Agent%20for%20Data%20Analysis/backend/utils/logger.py#L31), `console_handler = logging.StreamHandler(sys.stdout)` is configured without UTF-8 encoding.
-- [backend/utils/logger.py:49](file:///d:/Projects/Agent%20for%20Data%20Analysis/backend/utils/logger.py#L49) logs emoji strings: `=== 🧠 LLM INTERACTION START ===`.
+- In [backend/utils/logger.py:31](../../backend/utils/logger.py#L31), `console_handler = logging.StreamHandler(sys.stdout)` is configured without UTF-8 encoding.
+- [backend/utils/logger.py:49](../../backend/utils/logger.py#L49) logs emoji strings: `=== 🧠 LLM INTERACTION START ===`.
 - On Windows systems using default codepage `cp1252`, this triggers:
   `UnicodeEncodeError: 'charmap' codec can't encode character '\U0001f9e0'` inside the Python logging stream.
 

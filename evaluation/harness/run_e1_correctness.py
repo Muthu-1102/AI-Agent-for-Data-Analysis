@@ -153,9 +153,12 @@ def classify_failure(record: Dict[str, Any], match_comp: bool, match_sum: bool) 
         
     return "UNCLASSIFIED"
 
-async def run_cohort(questions_path: str, output_jsonl: str, repetitions: int = 1, delay_sec: float = 0.5):
+async def run_cohort(questions_path: str, output_jsonl: str, repetitions: int = 1, delay_sec: float = 0.5, limit: int = None):
     with open(questions_path, "r", encoding="utf-8") as f:
         questions = json.load(f)
+
+    if limit is not None:
+        questions = questions[:limit]
 
     os.makedirs(os.path.dirname(output_jsonl), exist_ok=True)
     records = []
@@ -264,22 +267,30 @@ async def run_cohort(questions_path: str, output_jsonl: str, repetitions: int = 
     return records
 
 if __name__ == "__main__":
-    target_mode = sys.argv[1] if len(sys.argv) > 1 else "baseline"
+    import argparse
+    parser = argparse.ArgumentParser(description="Experiment E1 runner")
+    parser.add_argument("mode", nargs="?", default="baseline", help="baseline, after, or smoke")
+    parser.add_argument("--limit", type=int, default=None, help="Limit number of questions to evaluate")
+    parser.add_argument("--reps", type=int, default=None, help="Number of repetitions per question")
+    parser.add_argument("--output", type=str, default=None, help="Custom output JSONL path")
+    args = parser.parse_args()
+    
+    target_mode = args.mode
     dev_path = "evaluation/dataset/questions_dev.json"
     heldout_path = "evaluation/dataset/questions_heldout.json"
     
-    out_dev = f"evaluation/results/{target_mode}/e1_dev_raw.jsonl"
-    out_heldout = f"evaluation/results/{target_mode}/e1_heldout_raw.jsonl"
+    out_dev = args.output or f"evaluation/results/{target_mode}/e1_dev_raw.jsonl"
+    out_heldout = args.output or f"evaluation/results/{target_mode}/e1_heldout_raw.jsonl"
+    reps = args.reps if args.reps is not None else (3 if target_mode != "smoke" else 1)
     
-    if target_mode == "after":
-        # Run held-out evaluation directly for post-improvement benchmarking
+    if target_mode == "smoke":
+        print(f"\n=== EXECUTING SMOKE TEST COHORT (DEV SET) -> {out_dev} ===")
+        asyncio.run(run_cohort(dev_path, out_dev, repetitions=1, delay_sec=1.0, limit=args.limit or 3))
+    elif target_mode == "after":
         print(f"\n=== EXECUTING FROZEN HELD-OUT COHORT (AFTER IMPROVEMENTS) -> {out_heldout} ===")
-        asyncio.run(run_cohort(heldout_path, out_heldout, repetitions=3, delay_sec=1.5))
+        asyncio.run(run_cohort(heldout_path, out_heldout, repetitions=reps, delay_sec=1.5, limit=args.limit))
     else:
-        # 1. Run Dev Cohort (1 rep)
         print("=== EXECUTING DEV COHORT ===")
-        asyncio.run(run_cohort(dev_path, out_dev, repetitions=1, delay_sec=1.2))
-        
-        # 2. Run Held-Out Cohort (3 reps)
+        asyncio.run(run_cohort(dev_path, out_dev, repetitions=1, delay_sec=1.2, limit=args.limit))
         print(f"\n=== EXECUTING FROZEN HELD-OUT COHORT (3 REPETITIONS) -> {out_heldout} ===")
-        asyncio.run(run_cohort(heldout_path, out_heldout, repetitions=3, delay_sec=1.2))
+        asyncio.run(run_cohort(heldout_path, out_heldout, repetitions=reps, delay_sec=1.2, limit=args.limit))

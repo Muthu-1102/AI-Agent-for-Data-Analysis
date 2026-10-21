@@ -21,7 +21,7 @@ class Settings(BaseSettings):
     # === API Keys & Secrets ===
     # Forcing GROQ_API_KEY to be required at startup. If it's missing, the app will fail-fast securely.
     GROQ_API_KEY: str = Field(..., description="Groq API Key for LLM access")
-    GROQ_MODEL: str = Field(default="llama-3.1-8b-instant", description="Default Groq model for all LLM calls")
+    GROQ_MODEL: str = Field(default="openai/gpt-oss-20b", description="Default Groq model for all LLM calls (e.g. openai/gpt-oss-20b or qwen/qwen3.8-27b)")
     
     # === Agent / System Defaults ===
     MAX_RETRIES: int = Field(default=3, description="Maximum number of retries for LLM calls")

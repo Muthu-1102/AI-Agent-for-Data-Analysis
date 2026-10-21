@@ -21,6 +21,13 @@ def test_extract_numbers():
     assert 0.254 in nums
     assert -15.2 in nums
 
+def test_extract_large_unformatted_numbers():
+    text = "Total sum of sales_amount: 758584.4099999999 and salary: 114155.38 and units: 7522.0"
+    nums = AnswerMatcher.extract_numbers(text)
+    assert any(abs(n - 758584.41) < 0.01 for n in nums)
+    assert any(abs(n - 114155.38) < 0.01 for n in nums)
+    assert any(abs(n - 7522.0) < 0.01 for n in nums)
+
 def test_match_numeric_exact():
     matched, cand, reason = AnswerMatcher.match_numeric("The answer is 20.0", 20.0, tolerance=0.01)
     assert matched is True

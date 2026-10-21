@@ -1,5 +1,48 @@
 {
   "matched_runs_analyzed": 144,
+  "evaluation_harness_audit": {
+    "harness_regex_bug_identified": "Truncation of numbers with >3 digits without thousands-commas (e.g. 758584.41 -> 758.0)",
+    "baseline_false_negatives_count": 36,
+    "baseline_as_logged_raw_accuracy": 0.6806,
+    "baseline_rescaled_audited_accuracy": 0.9306,
+    "sample_false_negatives": [
+      {
+        "case_id": "HELD-04",
+        "repetition": 1,
+        "expected": 7601,
+        "matched_candidate": 7601.0,
+        "raw_output": "Total quantity of items ordered: 7601"
+      },
+      {
+        "case_id": "HELD-05",
+        "repetition": 1,
+        "expected": 251207.13,
+        "matched_candidate": 251207.13,
+        "raw_output": "Total sales_amount for Electronics: 251207.13"
+      },
+      {
+        "case_id": "HELD-09",
+        "repetition": 1,
+        "expected": 7161.24,
+        "matched_candidate": 7161.240000000001,
+        "raw_output": "Total profit for South region orders with 0.0 discount: 7161.240000000001"
+      },
+      {
+        "case_id": "HELD-11",
+        "repetition": 1,
+        "expected": 1530,
+        "matched_candidate": 1530.0,
+        "raw_output": "The order_id with the highest sales_amount is: 1530"
+      },
+      {
+        "case_id": "HELD-13",
+        "repetition": 1,
+        "expected": 1486.73,
+        "matched_candidate": 1486.73,
+        "raw_output": "Difference between maximum and minimum sales_amount: 1486.73"
+      }
+    ]
+  },
   "infrastructure_failures": {
     "baseline_count": 10,
     "after_count": 140,

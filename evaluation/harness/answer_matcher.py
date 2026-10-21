@@ -24,8 +24,9 @@ class AnswerMatcher:
         # Clean markdown formatting like **1,373.78**
         cleaned = re.sub(r"[*_`]", "", text)
         
-        # Regex for numbers with optional negative sign and commas
-        pattern = r"(?<![A-Za-z0-9_])-?\$?\d{1,3}(?:,\d{3})*(?:\.\d+)?%?|(?<![A-Za-z0-9_])-?\d+(?:\.\d+)?%?"
+        # Regex for numbers with optional negative sign, currency symbol, commas, and decimals.
+        # Prioritize matching comma-formatted numbers first, then arbitrary digit strings.
+        pattern = r"(?<![A-Za-z0-9_])-?\$?(?:\d{1,3}(?:,\d{3})+(?:\.\d+)?|\d+(?:\.\d+)?%?)"
         matches = re.findall(pattern, cleaned)
         
         results = []

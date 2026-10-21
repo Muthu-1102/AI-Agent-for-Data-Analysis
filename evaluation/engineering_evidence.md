@@ -17,37 +17,38 @@ These evidence statements represent verified, empirically measured system perfor
 > **Eliminated infinite-loop denial-of-service vulnerabilities by implementing isolated subprocess code execution with a hard 30-second wall-clock timeout.**
 > - **Baseline**: `SANDBOX_TIMEOUT_SECONDS=30` was declared in settings but never wired into execution logic; code executed directly in-process via `exec()`, causing a single `while True: pass` loop to permanently freeze the FastAPI server event loop.
 > - **Post-Improvement**: Execution migrated to isolated subprocesses with `subprocess.run(timeout=30)` and per-request UUID plot filenames (`plot_{uuid}.png`), ensuring 100% clean termination on timeouts and zero cross-request artifact collisions.
-> - **Raw Evidence**: [`e4_security_raw.jsonl`](file:///d:/Projects/Agent%20for%20Data%20Analysis/evaluation/results/baseline/e4_security_raw.jsonl) (probes MAL-36 through MAL-42) vs [`after/e4_security_raw.jsonl`](file:///d:/Projects/Agent%20for%20Data%20Analysis/evaluation/results/after/e4_security_raw.jsonl), implemented in [`backend/agents/execution_agent.py`](file:///d:/Projects/Agent%20for%20Data%20Analysis/backend/agents/execution_agent.py).
+> - **Raw Evidence**: [`e4_security_raw.jsonl`](results/baseline/e4_security_raw.jsonl) (probes MAL-36 through MAL-42) vs [`after/e4_security_raw.jsonl`](results/after/e4_security_raw.jsonl), implemented in [`backend/agents/execution_agent.py`](../backend/agents/execution_agent.py).
 
 ### Bullet 2: AST Security Hardening & Dunder Introspection Elimination
 > **Increased malicious code block rate from 57.14% [42.21%, 70.88%] (24/42) to 80.95% [66.70%, 90.02%] (34/42) while maintaining a 0.00% [0.00%, 8.38%] benign false-positive rate.**
 > - **Baseline**: Relied on naive substring matching in `Sandbox.is_safe_code` and partial AST checking, allowing 7 out of 7 dunder introspection exploits (`__class__.__subclasses__`) and disk write calls (`df.to_csv()`) to execute without detection.
 > - **Post-Improvement**: Unified AST validation into a comprehensive `SecurityVisitor` that recursively traverses attributes, calls, and imports, blocking dunder access, dangerous globals (`eval`, `exec`, `globals`), and unauthorized I/O primitives.
 > - **Dunder Bypasses**: Reduced from 7 to 0 (100% blocked).
-> - **Raw Evidence**: [`e4_security_raw.jsonl`](file:///d:/Projects/Agent%20for%20Data%20Analysis/evaluation/results/baseline/e4_security_raw.jsonl) vs [`after/e4_security_raw.jsonl`](file:///d:/Projects/Agent%20for%20Data%20Analysis/evaluation/results/after/e4_security_raw.jsonl), codified in [`backend/agents/validation_agent.py`](file:///d:/Projects/Agent%20for%20Data%20Analysis/backend/agents/validation_agent.py) and [`backend/utils/sandbox.py`](file:///d:/Projects/Agent%20for%20Data%20Analysis/backend/utils/sandbox.py).
+> - **Raw Evidence**: [`e4_security_raw.jsonl`](results/baseline/e4_security_raw.jsonl) vs [`after/e4_security_raw.jsonl`](results/after/e4_security_raw.jsonl), codified in [`backend/agents/validation_agent.py`](../backend/agents/validation_agent.py) and [`backend/utils/sandbox.py`](../backend/utils/sandbox.py).
 
 ### Bullet 3: Feedback-Driven Multi-Agent Self-Repair Loop
 > **Architected an iterative self-repair loop feeding validation errors and execution tracebacks back to the code generator, replacing a static retry mechanism that had 0.00% [0.00%, 56.15%] recovery.**
 > - **Baseline**: The orchestrator's retry loop simply re-executed the exact same agent up to 3 times on static, unmodified state dicts. When code failed validation or threw exceptions, it achieved 0% recovery because no error context was passed back.
 > - **Post-Improvement**: Redesigned `Orchestrator.execute_pipeline` to capture validation rejections and runtime tracebacks, passing them back to `CodeAgent` with targeted repair instructions across up to 3 bounded correction cycles.
-> - **Raw Evidence**: [`e3_retry_raw.jsonl`](file:///d:/Projects/Agent%20for%20Data%20Analysis/evaluation/results/baseline/e3_retry_raw.jsonl) vs [`after/e3_retry_raw.jsonl`](file:///d:/Projects/Agent%20for%20Data%20Analysis/evaluation/results/after/e3_retry_raw.jsonl), implemented in [`backend/core/orchestrator.py`](file:///d:/Projects/Agent%20for%20Data%20Analysis/backend/core/orchestrator.py).
+> - **Raw Evidence**: [`e3_retry_raw.jsonl`](results/baseline/e3_retry_raw.jsonl) vs [`after/e3_retry_raw.jsonl`](results/after/e3_retry_raw.jsonl), implemented in [`backend/core/orchestrator.py`](../backend/core/orchestrator.py).
 
 ### Bullet 4: Grounded Report Synthesis & Hallucination Elimination
 > **Eliminated prompt directives that encouraged metric hallucination, enforcing factual alignment between generated natural-language reports and executed console calculations.**
 > - **Baseline**: Prompt directed the LLM to *"try to elegantly infer the closest reasonable metric"* when computations failed, resulting in a 39.77% ungrounded figure rate (baseline numeric grounding: 60.23% [54.16%, 66.00%]).
 > - **Post-Improvement**: Re-engineered `ReportAgent` prompt to strictly forbid inferring or inventing numbers not present in the execution output, mandating explicit error reporting when data calculations are unavailable.
-> - **Raw Evidence**: [`e6_grounding_raw.jsonl`](file:///d:/Projects/Agent%20for%20Data%20Analysis/evaluation/results/baseline/e6_grounding_raw.jsonl) vs [`after/e6_grounding_raw.jsonl`](file:///d:/Projects/Agent%20for%20Data%20Analysis/evaluation/results/after/e6_grounding_raw.jsonl), modified in [`backend/agents/report_agent.py`](file:///d:/Projects/Agent%20for%20Data%20Analysis/backend/agents/report_agent.py).
+> - **Raw Evidence**: [`e6_grounding_raw.jsonl`](results/baseline/e6_grounding_raw.jsonl) vs [`after/e6_grounding_raw.jsonl`](results/after/e6_grounding_raw.jsonl), modified in [`backend/agents/report_agent.py`](../backend/agents/report_agent.py).
 
 ### Bullet 5: API Hardening & Directory Traversal Remediation
 > **Secured dataset access against path traversal attacks and added file size limits to prevent out-of-memory denial of service.**
 > - **Baseline**: `dataset_id` was concatenated directly to the data directory without canonicalization, allowing directory traversal sequences (`../../etc/passwd` or `..\windows\win.ini`). Uploaded file sizes were uncapped.
 > - **Post-Improvement**: Added `resolve_dataset_path` with strict path canonicalization (`os.path.realpath`) and directory boundary enforcement; introduced a 50MB upload size limit and truthful execution status flags (`execution_success: bool`).
-> - **Raw Evidence**: [`backend/utils/helpers.py`](file:///d:/Projects/Agent%20for%20Data%20Analysis/backend/utils/helpers.py), [`backend/api/routes.py`](file:///d:/Projects/Agent%20for%20Data%20Analysis/backend/api/routes.py), and [`backend/api/schemas.py`](file:///d:/Projects/Agent%20for%20Data%20Analysis/backend/api/schemas.py).
+> - **Raw Evidence**: [`backend/utils/helpers.py`](../backend/utils/helpers.py), [`backend/api/routes.py`](../backend/api/routes.py), and [`backend/api/schemas.py`](../backend/api/schemas.py).
 
-### Bullet 6: Empirical Benchmark Framework & Infrastructure Classification
-> **Built a verifiable evaluation harness with 48 frozen held-out questions across 4 synthetic domains, calculating Wilson 95% confidence intervals and cleanly classifying infrastructure failures.**
-> - **Baseline & Improvement Telemetry**: Evaluated on Groq API (`openai/gpt-oss-20b`); achieved 73.13% [65.06%, 79.92%] baseline computation correctness on available runs; rigorously classified 140 downstream quota limit rejections as `INFRA_ERROR` (HTTP 429) rather than model reasoning failures under McNemar testing.
-> - **Raw Evidence**: [`evaluation/results/baseline/baseline_summary.json`](file:///d:/Projects/Agent%20for%20Data%20Analysis/evaluation/results/baseline/baseline_summary.json) and [`evaluation/results/after/paired_comparison.json`](file:///d:/Projects/Agent%20for%20Data%20Analysis/evaluation/results/after/paired_comparison.json).
+### Bullet 6: Empirical Benchmark Framework, Harness Auditing & Infrastructure Classification
+> **Built a verifiable evaluation harness with 48 frozen held-out questions across 4 synthetic domains, calculating Wilson 95% confidence intervals, auditing harness regex truncation, and cleanly classifying infrastructure failures.**
+> - **Harness Regex Audit Finding**: Post-evaluation telemetry inspection identified 36 false negatives in initial baseline logs caused by regex truncation on numbers with >3 digits without commas. Re-scoring verified that pandas code executed correctly in 134 out of 134 API-available runs (100.0% conditional accuracy, 93.06% raw; 98/144 as logged under initial regex).
+> - **Infrastructure Accounting**: Rigorously classified 140 downstream quota limit rejections as `INFRA_ERROR` (HTTP 429) rather than model reasoning failures under McNemar testing, verifying that post-improvement queries executed prior to quota exhaustion succeeded at 100% (4/4 held-out, 3/3 live smoke test).
+> - **Raw Evidence**: [`evaluation/results/baseline/baseline_summary.json`](results/baseline/baseline_summary.json), [`evaluation/results/after/paired_comparison.json`](results/after/paired_comparison.json), and [`evaluation/results/smoke/e1_dev_raw.jsonl`](results/smoke/e1_dev_raw.jsonl).
 
 ---
 
@@ -125,6 +126,24 @@ These evidence statements represent verified, empirically measured system perfor
 
 ---
 
+### Question 6: How did you audit and validate the evaluation harness itself to prevent false negatives?
+**Context**: Automated LLM evaluation systems can introduce evaluator bias or regex bugs that mischaracterize system performance.
+
+**Answer**:
+> "During our failure taxonomy investigation (Experiment E2), I performed a manual trace audit on the 36 baseline runs classified as `EXECUTED_WRONG_ANSWER`. Comparing the raw stdout in `captured_output` directly against the ground truth revealed a surprising pattern: the pandas code had actually computed and printed the exact ground-truth values (e.g. `Total quantity: 7601`, `Total sales: 251207.13`, `Median salary: 114125.0`), but the automated matcher scored them as incorrect.
+> 
+> Investigating `AnswerMatcher.extract_numbers` uncovered a regex alternation bug:
+> `(?<![A-Za-z0-9_])-?\$?\d{1,3}(?:,\d{3})*(?:\.\d+)?%?|(?<![A-Za-z0-9_])-?\d+(?:\.\d+)?%?`
+> 
+> Because the first branch matched any 1 to 3 digits with optional comma groups, numbers like `7601` or `251207.13` (lacking comma formatting) had their first 3 digits matched greedily as `760.0` and `251.0`, discarding the remainder.
+> 
+> I refactored the pattern to require at least one comma group before falling back to arbitrary digit strings:
+> `(?<![A-Za-z0-9_])-?\$?(?:\d{1,3}(?:,\d{3})+(?:\.\d+)?|\d+(?:\.\d+)?%?)`
+> 
+> I added unit tests covering unformatted large numbers to `test_matcher.py` and re-scored the baseline. All 36 false negatives were resolved, proving that 134 out of 134 runs where the API was available had executed correctly. This highlights a fundamental evaluation principle: **the evaluation harness itself must be tested and audited as rigorously as the production pipeline**."
+
+---
+
 ## 3. Architectural Trade-offs & Engineering Decisions
 
 | Architectural Decision | Chosen Approach | Alternative Considered | Trade-off Rationale |
@@ -159,7 +178,7 @@ These evidence statements represent verified, empirically measured system perfor
 
 ## 5. Proposed README Corrections (Git Diff)
 
-The repository's root [`README.md`](file:///d:/Projects/Agent%20for%20Data%20Analysis/README.md) contained several factual inaccuracies regarding minimum Python versions, backend launch commands, API route paths, and sandbox security guarantees.
+The repository's root [`README.md`](../README.md) contained several factual inaccuracies regarding minimum Python versions, backend launch commands, API route paths, and sandbox security guarantees.
 
 Below is the verified, proposed diff aligning `README.md` with true system behavior:
 
