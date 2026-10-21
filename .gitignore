@@ -10,4 +10,8 @@ __pycache__/
 .pyre/
 .mypy_cache/
 .coverage
-data
+data/
+*.log
+logs/
+output_plot*.png
+*.pkl
