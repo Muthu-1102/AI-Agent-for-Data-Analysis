@@ -38,7 +38,8 @@ class Orchestrator:
             "query": query,
             "user_query": query,   # Alias used by PromptAgent / ReportAgent
             "file_id": file_id,
-            "errors": []
+            "errors": [],
+            "execution_success": False
         }
         
         try:

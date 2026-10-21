@@ -161,4 +161,5 @@ async def run_all_e3(output_path="evaluation/results/baseline/e3_retry_raw.jsonl
     print(f"E3 Complete. Saved {len(all_results)} scenario records to {output_path}")
 
 if __name__ == "__main__":
-    asyncio.run(run_all_e3())
+    target_out = sys.argv[1] if len(sys.argv) > 1 else "evaluation/results/baseline/e3_retry_raw.jsonl"
+    asyncio.run(run_all_e3(output_path=target_out))

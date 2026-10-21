@@ -212,4 +212,5 @@ asyncio.run(run())
     print(f"E4 Security evaluation complete. Saved {len(results)} records to {output_path}")
 
 if __name__ == "__main__":
-    asyncio.run(run_security_evaluation())
+    target_out = sys.argv[1] if len(sys.argv) > 1 else "evaluation/results/baseline/e4_security_raw.jsonl"
+    asyncio.run(run_security_evaluation(output_path=target_out))
