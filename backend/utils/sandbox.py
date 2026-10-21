@@ -1,16 +1,15 @@
 import builtins
 import ast
+from agents.validation_agent import SecurityVisitor, ALLOWED_MODULES
 
 class Sandbox:
     """
     Security execution wrapper. 
-    Restricts available built-ins and performs basic static analysis to prevent 
+    Restricts available built-ins and uses unified AST validation to prevent 
     the AI from generating codes with unsafe operations (e.g., file system access, shell execution).
     """
 
-    ALLOWED_MODULES = {
-        'pandas', 'numpy', 'matplotlib', 'matplotlib.pyplot', 'seaborn', 'math', 'datetime'
-    }
+    ALLOWED_MODULES = ALLOWED_MODULES
     
     @staticmethod
     def safe_import(name, globals=None, locals=None, fromlist=(), level=0):
@@ -26,15 +25,16 @@ class Sandbox:
     @staticmethod
     def get_safe_builtins() -> dict:
         """
-        Returns a highly restricted dictionary of Python built-ins.
-        Explicitly removes dangerous functions like 'open', 'eval', 'exec'.
+        Returns a restricted dictionary of Python built-ins.
+        Explicitly removes functions like 'open', 'eval', 'exec', 'getattr', 'type'
+        to prevent sandbox escape via introspection.
         """
         safe_names = [
-            'abs', 'all', 'any', 'bool', 'dict', 'dir', 'enumerate', 'filter',
-            'float', 'format', 'getattr', 'hasattr', 'hash', 'hex', 'id', 'int',
+            'abs', 'all', 'any', 'bool', 'dict', 'enumerate', 'filter',
+            'float', 'format', 'hasattr', 'hash', 'hex', 'id', 'int',
             'isinstance', 'issubclass', 'iter', 'len', 'list', 'map', 'max',
             'min', 'next', 'oct', 'pow', 'print', 'range', 'repr', 'reversed',
-            'round', 'set', 'slice', 'sorted', 'str', 'sum', 'tuple', 'type', 'zip',
+            'round', 'set', 'slice', 'sorted', 'str', 'sum', 'tuple', 'zip',
             'Exception', 'ValueError', 'TypeError', 'KeyError', 'IndexError'
         ]
         safe_builtins = {name: getattr(builtins, name) for name in safe_names if hasattr(builtins, name)}
@@ -44,26 +44,13 @@ class Sandbox:
     @staticmethod
     def is_safe_code(code_string: str) -> bool:
         """
-        Validates the AST (Abstract Syntax Tree) to ensure no dangerous modules
-        are imported dynamically.
+        Validates code against the unified AST SecurityVisitor.
+        No brittle substring matching (avoids false positives on column/variable names).
         """
-        # Block literal keyword appearances for quick failure
-        forbidden_keywords = ['__import__', 'eval', 'exec', 'open']
-        for kw in forbidden_keywords:
-            if kw in code_string:
-                return False
-                
-        # AST-level validation to catch imports like `import os`, `import subprocess`
         try:
             tree = ast.parse(code_string)
-            for node in ast.walk(tree):
-                if isinstance(node, ast.Import) or isinstance(node, ast.ImportFrom):
-                    for alias in node.names:
-                        # Allow only whitelisted safe analytical libraries
-                        if alias.name not in ['pandas', 'numpy', 'matplotlib', 'matplotlib.pyplot', 'seaborn', 'math', 'datetime']:
-                            return False
+            visitor = SecurityVisitor()
+            visitor.visit(tree)
+            return len(visitor.violations) == 0
         except SyntaxError:
-            # If the code can't be parsed, it's unsafe/invalid
             return False
-            
-        return True

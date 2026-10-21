@@ -12,6 +12,16 @@ ALLOWED_MODULES = {
 }
 
 class SecurityVisitor(ast.NodeVisitor):
+    FORBIDDEN_BUILTINS = {
+        'eval', 'exec', 'open', 'compile', 'input', '__import__',
+        'getattr', 'setattr', 'delattr'
+    }
+    
+    FORBIDDEN_METHODS = {
+        'to_csv', 'to_pickle', 'to_feather', 'to_parquet', 'to_excel',
+        'to_sql', 'to_clipboard', 'read_pickle', 'to_hdf'
+    }
+
     def __init__(self):
         self.violations = []
 
@@ -29,10 +39,18 @@ class SecurityVisitor(ast.NodeVisitor):
                 self.violations.append(f"Unsafe from-import blocked: '{node.module}'")
         self.generic_visit(node)
         
-    # Additionally explicitly block highly dangerous built-ins to seal up the sandbox
+    def visit_Attribute(self, node):
+        # Block dunder / introspection escapes e.g. __class__, __subclasses__, __globals__
+        if node.attr.startswith("__") and node.attr.endswith("__"):
+            self.violations.append(f"Unsafe dunder attribute access blocked: '{node.attr}'")
+        # Block serialization and disk write methods
+        if node.attr in self.FORBIDDEN_METHODS:
+            self.violations.append(f"Unsafe file write or serialization method blocked: '{node.attr}'")
+        self.generic_visit(node)
+        
     def visit_Call(self, node):
         if isinstance(node.func, ast.Name):
-            if node.func.id in {'eval', 'exec', 'open', 'compile', 'input', '__import__'}:
+            if node.func.id in self.FORBIDDEN_BUILTINS:
                 self.violations.append(f"Unsafe built-in function blocked: '{node.func.id}'")
         self.generic_visit(node)
 
