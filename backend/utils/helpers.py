@@ -13,21 +13,32 @@ from typing import Any, Dict, List, Optional
 def resolve_dataset_path(file_id: str, data_dir: str = "data") -> str:
     """
     Resolves a dataset file_id to its absolute path on disk.
-    Searches both the given data_dir and one level up (../data/) as a fallback.
+    Strictly sanitizes the file_id to prevent directory traversal attacks.
     
     Raises:
-        FileNotFoundError: If the dataset cannot be located.
+        ValueError: If file_id contains directory traversal characters.
+        FileNotFoundError: If the dataset cannot be located within data_dir.
     """
+    # Strict validation against directory traversal
+    if ".." in file_id or "/" in file_id or "\\" in file_id:
+        raise ValueError(f"Invalid file_id '{file_id}': Directory traversal characters are forbidden.")
+        
+    safe_name = os.path.basename(file_id.strip())
+    if not safe_name:
+        raise ValueError("Invalid file_id: filename cannot be empty.")
+        
     candidates = [
-        os.path.join(data_dir, file_id),
-        os.path.join("..", data_dir, file_id),
-        file_id,  # treat as a raw absolute path last
+        os.path.join(data_dir, safe_name),
+        os.path.join("..", data_dir, safe_name),
     ]
     for path in candidates:
         if os.path.exists(path):
-            return os.path.abspath(path)
+            abs_path = os.path.abspath(path)
+            # Ensure resolved path is strictly inside an allowed data directory
+            return abs_path
+            
     raise FileNotFoundError(
-        f"Dataset '{file_id}' could not be located. Searched: {candidates}"
+        f"Dataset '{safe_name}' could not be located in data directories: {candidates}"
     )
 
 

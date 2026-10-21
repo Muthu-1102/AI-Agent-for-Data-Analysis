@@ -31,6 +31,14 @@ async def upload_file(
             detail="Only CSV files are explicitly allowed at this time."
         )
     
+    # Check max upload size (50MB)
+    MAX_FILE_SIZE = 50 * 1024 * 1024
+    if file.size and file.size > MAX_FILE_SIZE:
+        raise HTTPException(
+            status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
+            detail=f"File exceeds maximum allowed size of 50MB."
+        )
+    
     try:
         file_id = await file_service.save_upload_file(file)
         
@@ -55,13 +63,29 @@ async def process_query(
     Takes a user's natural language request and orchestrates 
     the Multi-Agent pipeline (Schema -> Prompt -> Code -> Validation -> Execution -> Report)
     """
+    # Validate file_id against directory traversal
+    if ".." in request.file_id or "/" in request.file_id or "\\" in request.file_id:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid file_id: Path traversal characters are not permitted."
+        )
+
     try:
         logger.info(f"Processing analytic query across dataset [{request.file_id}]: {request.query}")
         
         pipeline_output = await orchestrator.execute_pipeline(request.query, request.file_id)
         
+        raw_status = pipeline_output.get("status", "error")
+        is_exec_success = bool(pipeline_output.get("execution_success", False))
+        
+        # Truthful status: if pipeline marked completed but code execution failed, status is 'failed'
+        truthful_status = raw_status
+        if raw_status == "completed" and not is_exec_success and pipeline_output.get("error"):
+            truthful_status = "failed"
+            
         return QueryResponse(
-            status=pipeline_output.get("status", "error"),
+            status=truthful_status,
+            execution_success=is_exec_success,
             insights_summary=pipeline_output.get("insights_summary"),
             generated_code=pipeline_output.get("generated_code"),
             captured_output=pipeline_output.get("captured_output"),

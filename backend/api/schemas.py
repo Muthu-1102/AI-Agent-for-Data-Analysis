@@ -7,6 +7,7 @@ class QueryRequest(BaseModel):
 
 class QueryResponse(BaseModel):
     status: str = Field(..., description="Pipeline status: 'completed', 'error', or 'fatal'")
+    execution_success: bool = Field(default=False, description="Whether the generated code executed successfully without runtime exception")
     insights_summary: Optional[str] = Field(default=None, description="LLM-generated insights report")
     generated_code: Optional[str] = Field(default=None, description="The Python code that was generated")
     captured_output: Optional[str] = Field(default=None, description="Raw stdout from code execution")
